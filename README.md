@@ -1,17 +1,12 @@
 # 원모의 네스트제이에스 연습
 
-> 갤로핑을 위한 작업의 일환
+> 갤로핑을 위한 작업의 일환  
+> [읽은 것](https://docs.nestjs.com/)
 
-```
-[ 연습 목표 ]
-[ ~ ] common(routing, validation 등등)
-[ ~ ] mongoDB (orm? drm?)
-[ ~ ] NCP object storage
+## 네스트제이에스 메모
 
-- 이미지 정보를 데이터베이스에 저장하고 스토리지에 업로드하긔를 해보자
-```
+- 완전히 객체지향
 
-## 메모
 ```
 [ Controller ]
 In order to create a basic controller, we use classes and decorators
@@ -23,9 +18,17 @@ DTO 개념을 적극 사용 -> class를 사용하기를 권장(js로 트랜스�
 
 Controllers always belong to a module
 ```
-### 공식문서 샘플
 ```typescript
-import { Controller, Get, Query, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CreateCatDto, UpdateCatDto, ListAllEntities } from './dto';
 
 @Controller('cats')
@@ -56,6 +59,7 @@ export class CatsController {
   }
 }
 ```
+---
 ```
 [ Provider ]
 The main idea of a provider is that it can be injected as a dependency.
@@ -72,5 +76,67 @@ The Liskov substitution principle: "Functions that use pointers or references to
 The Interface segregation principle: "Clients should not be forced to depend upon interfaces that they do not use."
 
 The Dependency inversion principle: "Depend upon abstractions, [not] concretes."
+
+
+인젝터블하다.
+컨트롤러 외 로직은 프로바이더에 쓰면 된다.
+```
+---
+```
+[ module ]
+
+// 컨트롤러와 프로바이더를 하나의 묶음으로 만들어 줌
+// 다른 모듈에서 import 할 수 있음
+// 모든 모듈은 루트 모듈로 향한다(앱의 시작점임)
+@Module({
+  imports: [RamenModule],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+
+modules are strongly recommended as an effective way to organize your components. Thus, for most applications, the resulting architecture will employ multiple modules, each encapsulating a closely related set of capabilities.
+
+The @Module() decorator takes a single object whose properties describe the module
+- providers
+- controllers
+- imports
+- exports
+
+The module encapsulates providers by default. This means that it's impossible to inject providers that are neither directly part of the current module nor exported from the imported modules. Thus, you may consider the exported providers from a module as the module's public interface, or API.
+
+modules are singletons by default
+can share the same instance of any provider between multiple modules effortlessly.
+can be reused by any module. 
+
+export한 것은 다른 모듈에서도 접근할 수 있게 된다
+import한 모듈 그대로 export할 수 있다
+-> 유연하게 재사용 가능
+
+If you have to import the same set of modules everywhere,
+import { Module, Global } from '@nestjs/common';
+import { CatsController } from './cats.controller';
+import { CatsService } from './cats.service';
+
+@Global()
+@Module({
+  controllers: [CatsController],
+  providers: [CatsService],
+  exports: [CatsService],
+})
+export class CatsModule {}
+
+Global modules should be registered only once, generally by the root or core module.
+
+Making everything global is not a good design decision. 
+
+모듈이 nest js의 핵심이구만!
+```
+---
+```
+[ middleware ]
+equivalent to express middleware
+You implement custom Nest middleware in either a function, or in a class with an @Injectable() decorator. 
+The class should implement the NestMiddleware interface, while the function does not have any special requirements.
 
 ```
