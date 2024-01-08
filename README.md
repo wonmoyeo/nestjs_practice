@@ -140,3 +140,54 @@ You implement custom Nest middleware in either a function, or in a class with an
 The class should implement the NestMiddleware interface, while the function does not have any special requirements.
 
 ```
+---
+```
+[ exception handler ]
+익셉션을 핸들링함
+마찬가지로 디펜던씨 인젝션 시스템에 의거한 사용 필요
+필요하면 문서 다 시 보시오
+```
+---
+
+```
+[ pipe ]
+
+컨트롤러 가기 전 끼어들어서 리퀘스트 인풋 인자(body, query, param, custom) 관리 가능
+
+Built-in pipes#
+Nest comes with nine pipes available out-of-the-box:
+
+ValidationPipe
+ParseIntPipe
+ParseFloatPipe
+ParseBoolPipe
+ParseArrayPipe
+ParseUUIDPipe
+ParseEnumPipe
+DefaultValuePipe
+ParseFilePipe
+
+커스텀도 가능
+
+zod 를 쓰면 스키마베이스 발리데이션도 가능
+
+class-validator, class-transformer를 쓰면 클래스 필드에 데코레이터로 발리데이션 가능
+
+import { IsString, IsInt } from 'class-validator';
+
+export class CreateCatDto {
+  @IsString()
+  name: string;
+
+  @IsInt()
+  age: number;
+
+  @IsString()
+  breed: string;
+}
+
+```
+```
+그 밖에
+guard, interceptor 있음.
+```
